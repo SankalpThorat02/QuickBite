@@ -3,6 +3,7 @@ package com.sankalp.quickbite.user.controller;
 import com.sankalp.quickbite.user.dto.UserResponse;
 import com.sankalp.quickbite.user.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,5 +22,10 @@ public class UserController {
     @GetMapping
     public List<UserResponse> getAllUsers() {
         return userService.getAllUsers();
+    }
+
+    @GetMapping("/{userId}")
+    public UserResponse getUserById(@PathVariable Long userId) {
+        return userService.getUserById(userId);
     }
 }
