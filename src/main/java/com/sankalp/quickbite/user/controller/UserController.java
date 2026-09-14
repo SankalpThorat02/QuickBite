@@ -1,11 +1,11 @@
 package com.sankalp.quickbite.user.controller;
 
+import com.sankalp.quickbite.user.dto.UserRequest;
 import com.sankalp.quickbite.user.dto.UserResponse;
 import com.sankalp.quickbite.user.service.UserService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,4 +28,9 @@ public class UserController {
     public UserResponse getUserById(@PathVariable Long userId) {
         return userService.getUserById(userId);
     }
+
+//    @PostMapping
+//    public ResponseEntity<UserResponse> addUser(@RequestBody @Valid UserRequest userRequest) {
+//
+//    }
 }

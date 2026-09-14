@@ -1,5 +1,6 @@
 package com.sankalp.quickbite.common;
 
+import com.sankalp.quickbite.auth.exception.AdminAccountCreationNotAllowedException;
 import com.sankalp.quickbite.restaurant.exception.RestaurantNotFoundException;
 import com.sankalp.quickbite.user.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException ex) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(AdminAccountCreationNotAllowedException.class)
+    public ResponseEntity<String> handleAdminAccountCreationNotAllowedException(AdminAccountCreationNotAllowedException ex) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
                 .body(ex.getMessage());
     }
 }
