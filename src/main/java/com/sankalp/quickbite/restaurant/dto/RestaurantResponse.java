@@ -1,5 +1,6 @@
 package com.sankalp.quickbite.restaurant.dto;
 
+import com.sankalp.quickbite.restaurant.entity.RestaurantStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,5 +11,5 @@ public class RestaurantResponse {
     private Long id;
     private String name;
     private String address;
-    private String status;
+    private RestaurantStatus status;
 }
