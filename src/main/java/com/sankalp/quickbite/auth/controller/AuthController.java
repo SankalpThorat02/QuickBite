@@ -1,5 +1,7 @@
 package com.sankalp.quickbite.auth.controller;
 
+import com.sankalp.quickbite.auth.dto.AuthResponse;
+import com.sankalp.quickbite.auth.dto.LoginRequest;
 import com.sankalp.quickbite.auth.dto.SignupRequest;
 import com.sankalp.quickbite.auth.service.AuthService;
 import com.sankalp.quickbite.user.dto.UserResponse;
@@ -27,5 +29,10 @@ public class AuthController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(user);
+    }
+
+    @PostMapping("/login")
+    public AuthResponse login(@RequestBody @Valid LoginRequest request) {
+        return authService.login(request);
     }
 }

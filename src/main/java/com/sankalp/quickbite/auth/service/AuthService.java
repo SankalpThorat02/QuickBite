@@ -1,5 +1,7 @@
 package com.sankalp.quickbite.auth.service;
 
+import com.sankalp.quickbite.auth.dto.AuthResponse;
+import com.sankalp.quickbite.auth.dto.LoginRequest;
 import com.sankalp.quickbite.auth.dto.SignupRequest;
 import com.sankalp.quickbite.auth.exception.AdminAccountCreationNotAllowedException;
 import com.sankalp.quickbite.user.dto.UserResponse;
@@ -7,6 +9,9 @@ import com.sankalp.quickbite.user.entity.User;
 import com.sankalp.quickbite.user.entity.UserRole;
 import com.sankalp.quickbite.user.entity.UserStatus;
 import com.sankalp.quickbite.user.repository.UserRepository;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +20,12 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
     }
 
     public UserResponse signUp(SignupRequest request) {
@@ -45,5 +52,16 @@ public class AuthService {
                 createdUser.getRole(),
                 createdUser.getStatus()
         );
+    }
+
+    public AuthResponse login(LoginRequest request) {
+        String username = request.getEmail();
+        String password = request.getPassword();
+
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
+
+        Authentication authentication = authenticationManager.authenticate(token);
+
+        return new AuthResponse(authentication.getName());
     }
 }
