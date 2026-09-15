@@ -21,11 +21,13 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
     }
 
     public UserResponse signUp(SignupRequest request) {
@@ -61,7 +63,8 @@ public class AuthService {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
 
         Authentication authentication = authenticationManager.authenticate(token);
+        String accessToken = jwtService.createToken(authentication);
 
-        return new AuthResponse(authentication.getName());
+        return new AuthResponse(accessToken);
     }
 }
