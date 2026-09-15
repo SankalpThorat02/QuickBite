@@ -1,5 +1,8 @@
 package com.sankalp.quickbite.auth.service;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -42,5 +45,13 @@ public class JwtService {
                 .claim("authorities", authorities)
                 .signWith(secretKey)
                 .compact();
+    }
+
+    public Jws<Claims> parseAndValidateToken(String jwt) throws JwtException {
+
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(jwt);
     }
 }
