@@ -1,13 +1,13 @@
 package com.sankalp.quickbite.user.controller;
 
-import com.sankalp.quickbite.user.dto.UserRequest;
+import com.sankalp.quickbite.user.dto.ChangePasswordRequest;
+import com.sankalp.quickbite.user.dto.UpdateUserInfoRequest;
 import com.sankalp.quickbite.user.dto.UserResponse;
 import com.sankalp.quickbite.user.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -19,18 +19,20 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
-    public List<UserResponse> getAllUsers() {
-        return userService.getAllUsers();
+    @GetMapping("/me")
+    public UserResponse me() {
+        return userService.me();
     }
 
-    @GetMapping("/{userId}")
-    public UserResponse getUserById(@PathVariable Long userId) {
-        return userService.getUserById(userId);
+    @PutMapping("/me")
+    public UserResponse updateInfo(@RequestBody @Valid UpdateUserInfoRequest request) {
+        return userService.updateInfo(request);
     }
 
-//    @PostMapping
-//    public ResponseEntity<UserResponse> addUser(@RequestBody @Valid UserRequest userRequest) {
-//
-//    }
+    @PatchMapping("/me/password")
+    public ResponseEntity<Void> changePassword(@RequestBody @Valid ChangePasswordRequest request) {
+        userService.changePassword(request);
+
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -2,6 +2,7 @@ package com.sankalp.quickbite.common;
 
 import com.sankalp.quickbite.auth.exception.AdminAccountCreationNotAllowedException;
 import com.sankalp.quickbite.restaurant.exception.RestaurantNotFoundException;
+import com.sankalp.quickbite.user.exception.IncorrectPasswordProvidedException;
 import com.sankalp.quickbite.user.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleAdminAccountCreationNotAllowedException(AdminAccountCreationNotAllowedException ex) {
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(IncorrectPasswordProvidedException.class)
+    public ResponseEntity<String> handleIncorrectPasswordProvidedException(IncorrectPasswordProvidedException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
                 .body(ex.getMessage());
     }
 }
