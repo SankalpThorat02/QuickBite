@@ -83,4 +83,30 @@ public class UserService {
 
         userRepository.save(user);
     }
+
+    public List<UserResponse> getAllUsers() {
+        List<User> users = userRepository.findAll();
+
+        return users.stream()
+                .map(user -> new UserResponse(
+                        user.getUserId(),
+                        user.getName(),
+                        user.getEmail(),
+                        user.getRole(),
+                        user.getStatus()
+                )).collect(Collectors.toList());
+    }
+
+    public UserResponse getUser(Long userId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException("User with ID: " + userId + " not found"));
+
+        return new UserResponse(
+                user.getUserId(),
+                user.getName(),
+                user.getEmail(),
+                user.getRole(),
+                user.getStatus()
+        );
+    }
 }
