@@ -2,6 +2,7 @@ package com.sankalp.quickbite.common;
 
 import com.sankalp.quickbite.auth.exception.AdminAccountCreationNotAllowedException;
 import com.sankalp.quickbite.restaurant.exception.RestaurantNotFoundException;
+import com.sankalp.quickbite.restaurant.exception.UnauthorizedRestaurantAccessException;
 import com.sankalp.quickbite.user.exception.IncorrectPasswordProvidedException;
 import com.sankalp.quickbite.user.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleIncorrectPasswordProvidedException(IncorrectPasswordProvidedException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(UnauthorizedRestaurantAccessException.class)
+    public ResponseEntity<String> handleUnauthorizedRestaurantAccessException(UnauthorizedRestaurantAccessException ex) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
                 .body(ex.getMessage());
     }
 }

@@ -6,9 +6,11 @@ import com.sankalp.quickbite.menu.entity.MenuItemAvailability;
 import com.sankalp.quickbite.menu.repository.MenuItemRepository;
 import com.sankalp.quickbite.restaurant.dto.CreateRestaurantRequest;
 import com.sankalp.quickbite.restaurant.dto.RestaurantResponse;
+import com.sankalp.quickbite.restaurant.dto.UpdateRestaurantInfoRequest;
 import com.sankalp.quickbite.restaurant.entity.Restaurant;
 import com.sankalp.quickbite.restaurant.entity.RestaurantStatus;
 import com.sankalp.quickbite.restaurant.exception.RestaurantNotFoundException;
+import com.sankalp.quickbite.restaurant.exception.UnauthorizedRestaurantAccessException;
 import com.sankalp.quickbite.restaurant.mapper.RestaurantMapper;
 import com.sankalp.quickbite.restaurant.repository.RestaurantRepository;
 
@@ -106,5 +108,28 @@ public class RestaurantService {
                     menuItem.getPrice(),
                     menuItem.getAvailability()
                 )).collect(Collectors.toList());
+    }
+
+    @PreAuthorize("hasRole('RESTAURANT_OWNER')")
+    public RestaurantResponse updateRestaurantInfo(Long restaurantId, UpdateRestaurantInfoRequest request) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new RestaurantNotFoundException("Restaurant with ID: " + restaurantId + " not found"));
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        if (!restaurant.getOwner().getUserId().equals(user.getUserId())){
+            throw new UnauthorizedRestaurantAccessException("Cannot access this restaurant");
+        }
+
+        restaurant.setName(request.getName());
+        restaurant.setAddress(request.getAddress());
+
+        Restaurant savedRestaurant = restaurantRepository.save(restaurant);
+
+        return restaurantMapper.toResponse(savedRestaurant);
     }
 }

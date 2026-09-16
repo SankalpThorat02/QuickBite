@@ -3,6 +3,7 @@ package com.sankalp.quickbite.restaurant.controller;
 import com.sankalp.quickbite.menu.dto.MenuItemResponse;
 import com.sankalp.quickbite.restaurant.dto.CreateRestaurantRequest;
 import com.sankalp.quickbite.restaurant.dto.RestaurantResponse;
+import com.sankalp.quickbite.restaurant.dto.UpdateRestaurantInfoRequest;
 import com.sankalp.quickbite.restaurant.service.RestaurantService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -50,5 +51,10 @@ public class RestaurantController {
     @GetMapping("/{restaurantId}/menu")
     public List<MenuItemResponse> getMenuItems(@PathVariable Long restaurantId) {
         return restaurantService.getMenuItems(restaurantId);
+    }
+
+    @PutMapping("/{restaurantId}")
+    public RestaurantResponse updateRestaurantInfo(@PathVariable Long restaurantId, @RequestBody @Valid UpdateRestaurantInfoRequest request) {
+        return restaurantService.updateRestaurantInfo(restaurantId, request);
     }
 }
