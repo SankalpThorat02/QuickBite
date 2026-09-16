@@ -8,6 +8,7 @@ import com.sankalp.quickbite.user.entity.User;
 import com.sankalp.quickbite.user.entity.UserStatus;
 import com.sankalp.quickbite.user.exception.IncorrectPasswordProvidedException;
 import com.sankalp.quickbite.user.exception.UserNotFoundException;
+import com.sankalp.quickbite.user.mapper.UserMapper;
 import com.sankalp.quickbite.user.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,10 +23,12 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userMapper = userMapper;
     }
 
     public UserResponse me() {
@@ -35,13 +38,7 @@ public class UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User with email: " + email + " not found"));
 
-        return new UserResponse(
-                user.getUserId(),
-                user.getName(),
-                user.getEmail(),
-                user.getRole(),
-                user.getStatus()
-        );
+        return userMapper.toResponse(user);
     }
 
     public UserResponse updateInfo(UpdateUserInfoRequest request) {
@@ -55,13 +52,7 @@ public class UserService {
 
         userRepository.save(user);
 
-        return new UserResponse(
-                user.getUserId(),
-                user.getName(),
-                user.getEmail(),
-                user.getRole(),
-                user.getStatus()
-        );
+        return userMapper.toResponse(user);
     }
 
     public void changePassword(ChangePasswordRequest request) {
@@ -103,13 +94,7 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User with ID: " + userId + " not found"));
 
-        return new UserResponse(
-                user.getUserId(),
-                user.getName(),
-                user.getEmail(),
-                user.getRole(),
-                user.getStatus()
-        );
+        return userMapper.toResponse(user);
     }
 
     public UserResponse updateUserStatus(Long userId, StatusUpdateRequest request) {
@@ -121,12 +106,6 @@ public class UserService {
         user.setStatus(userStatus);
         userRepository.save(user);
 
-        return new UserResponse(
-                user.getUserId(),
-                user.getName(),
-                user.getEmail(),
-                user.getRole(),
-                user.getStatus()
-        );
+        return userMapper.toResponse(user);
     }
 }
