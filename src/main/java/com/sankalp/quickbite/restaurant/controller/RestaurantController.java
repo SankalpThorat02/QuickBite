@@ -1,5 +1,6 @@
 package com.sankalp.quickbite.restaurant.controller;
 
+import com.sankalp.quickbite.menu.dto.MenuItemResponse;
 import com.sankalp.quickbite.restaurant.dto.CreateRestaurantRequest;
 import com.sankalp.quickbite.restaurant.dto.RestaurantResponse;
 import com.sankalp.quickbite.restaurant.service.RestaurantService;
@@ -29,5 +30,25 @@ public class RestaurantController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(restaurant);
+    }
+
+    @GetMapping("/my")
+    public List<RestaurantResponse> getMyRestaurants() {
+        return restaurantService.getMyRestaurants();
+    }
+
+    @GetMapping
+    public List<RestaurantResponse> getAllRestaurants() {
+        return restaurantService.getAllRestaurants();
+    }
+
+    @GetMapping("/{restaurantId}")
+    public RestaurantResponse getRestaurant(@PathVariable Long restaurantId) {
+        return restaurantService.getRestaurant(restaurantId);
+    }
+
+    @GetMapping("/{restaurantId}/menu")
+    public List<MenuItemResponse> getMenuItems(@PathVariable Long restaurantId) {
+        return restaurantService.getMenuItems(restaurantId);
     }
 }

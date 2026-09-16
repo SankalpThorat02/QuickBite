@@ -1,9 +1,8 @@
 package com.sankalp.quickbite.menu.entity;
 
+import com.sankalp.quickbite.restaurant.entity.Restaurant;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -12,7 +11,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "MENU_ITEMS")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class MenuItem {
@@ -27,8 +27,12 @@ public class MenuItem {
     @Column(name = "MENU_ITEM_ID", nullable = false)
     private long menuItemId;
 
-    @Column(name = "RESTAURANT_ID", nullable = false)
-    private long restaurantId;
+//    @Column(name = "RESTAURANT_ID", nullable = false)
+//    private long restaurantId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "RESTAURANT_ID", nullable = false)
+    private Restaurant restaurant;
 
     @Column(name = "NAME", nullable = false)
     private String name;
