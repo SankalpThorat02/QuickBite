@@ -100,7 +100,7 @@ public class UserService {
     }
 
     public UserResponse getUser(Long userId) {
-        User user = userRepository.findByUserId(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User with ID: " + userId + " not found"));
 
         return new UserResponse(
@@ -113,7 +113,7 @@ public class UserService {
     }
 
     public UserResponse updateUserStatus(Long userId, StatusUpdateRequest request) {
-        User user = userRepository.findByUserId(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new  UserNotFoundException("User with ID: " + userId + " not found"));
 
         UserStatus userStatus = request.getStatus();

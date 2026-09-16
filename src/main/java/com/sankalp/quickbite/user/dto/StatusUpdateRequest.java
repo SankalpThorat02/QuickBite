@@ -1,7 +1,7 @@
 package com.sankalp.quickbite.user.dto;
 
 import com.sankalp.quickbite.user.entity.UserStatus;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StatusUpdateRequest {
 
-    @NotBlank
+    @NotNull
     private UserStatus status;
 }
