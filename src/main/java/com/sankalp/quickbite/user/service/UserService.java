@@ -1,9 +1,11 @@
 package com.sankalp.quickbite.user.service;
 
 import com.sankalp.quickbite.user.dto.ChangePasswordRequest;
+import com.sankalp.quickbite.user.dto.StatusUpdateRequest;
 import com.sankalp.quickbite.user.dto.UpdateUserInfoRequest;
 import com.sankalp.quickbite.user.dto.UserResponse;
 import com.sankalp.quickbite.user.entity.User;
+import com.sankalp.quickbite.user.entity.UserStatus;
 import com.sankalp.quickbite.user.exception.IncorrectPasswordProvidedException;
 import com.sankalp.quickbite.user.exception.UserNotFoundException;
 import com.sankalp.quickbite.user.repository.UserRepository;
@@ -100,6 +102,24 @@ public class UserService {
     public UserResponse getUser(Long userId) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new UserNotFoundException("User with ID: " + userId + " not found"));
+
+        return new UserResponse(
+                user.getUserId(),
+                user.getName(),
+                user.getEmail(),
+                user.getRole(),
+                user.getStatus()
+        );
+    }
+
+    public UserResponse updateUserStatus(Long userId, StatusUpdateRequest request) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new  UserNotFoundException("User with ID: " + userId + " not found"));
+
+        UserStatus userStatus = request.getStatus();
+
+        user.setStatus(userStatus);
+        userRepository.save(user);
 
         return new UserResponse(
                 user.getUserId(),

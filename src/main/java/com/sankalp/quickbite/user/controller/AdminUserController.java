@@ -1,11 +1,9 @@
 package com.sankalp.quickbite.user.controller;
 
+import com.sankalp.quickbite.user.dto.StatusUpdateRequest;
 import com.sankalp.quickbite.user.dto.UserResponse;
 import com.sankalp.quickbite.user.service.UserService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,5 +25,10 @@ public class AdminUserController {
     @GetMapping("/users/{userId}")
     public UserResponse getUser(@PathVariable Long userId) {
         return userService.getUser(userId);
+    }
+
+    @PatchMapping("/users/{userId}/status")
+    public UserResponse updateUserStatus(@PathVariable Long userId, @RequestBody StatusUpdateRequest request) {
+        return userService.updateUserStatus(userId, request);
     }
 }
