@@ -10,9 +10,5 @@ import lombok.NoArgsConstructor;
 public class UpdateUserInfoRequest {
 
     @NotBlank
-    @Email
-    private String email;
-
-    @NotBlank
     private String username;
 }

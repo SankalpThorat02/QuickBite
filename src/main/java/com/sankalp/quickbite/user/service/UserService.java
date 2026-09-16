@@ -43,14 +43,12 @@ public class UserService {
     }
 
     public UserResponse updateInfo(UpdateUserInfoRequest request) {
-        String email = request.getEmail();
         String username = request.getUsername();
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new  UserNotFoundException("User with email: " + authentication.getName() + " not found"));
 
-        user.setEmail(email);
         user.setName(username);
 
         userRepository.save(user);
