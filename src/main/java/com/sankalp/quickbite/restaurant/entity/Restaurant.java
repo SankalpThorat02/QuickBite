@@ -1,9 +1,8 @@
 package com.sankalp.quickbite.restaurant.entity;
 
+import com.sankalp.quickbite.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -11,9 +10,11 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "RESTAURANTS")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Restaurant {
 
     @Id
@@ -26,8 +27,9 @@ public class Restaurant {
     @Column(name = "RESTAURANT_ID", nullable = false)
     private Long restaurantId;
 
-    @Column(name = "OWNER_ID", nullable = false)
-    private Long ownerId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "OWNER_ID", nullable = false)
+    private User owner;
 
     @Column(name = "NAME", nullable = false)
     private String name;

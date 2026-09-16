@@ -1,12 +1,14 @@
 package com.sankalp.quickbite.restaurant.controller;
 
-import com.sankalp.quickbite.menu.dto.MenuItemResponse;
+import com.sankalp.quickbite.restaurant.dto.CreateRestaurantRequest;
 import com.sankalp.quickbite.restaurant.dto.RestaurantResponse;
 import com.sankalp.quickbite.restaurant.service.RestaurantService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,13 +22,12 @@ public class RestaurantController {
         this.restaurantService = restaurantService;
     }
 
-    @GetMapping
-    public List<RestaurantResponse> getAllRestaurants() {
-        return restaurantService.getAllRestaurants();
-    }
+    @PostMapping
+    public ResponseEntity<RestaurantResponse> createRestaurant(@RequestBody @Valid CreateRestaurantRequest request) {
+        RestaurantResponse restaurant = restaurantService.createRestaurant(request);
 
-    @GetMapping("/{restaurantId}/menu")
-    public List<MenuItemResponse> getRestaurantMenu(@PathVariable Long restaurantId) {
-        return restaurantService.getAllMenuItems(restaurantId);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(restaurant);
     }
 }

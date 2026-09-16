@@ -1,58 +1,56 @@
 package com.sankalp.quickbite.restaurant.service;
 
-import com.sankalp.quickbite.menu.dto.MenuItemResponse;
-import com.sankalp.quickbite.menu.entity.MenuItem;
-import com.sankalp.quickbite.menu.entity.MenuItemAvailability;
 import com.sankalp.quickbite.menu.repository.MenuItemRepository;
+import com.sankalp.quickbite.restaurant.dto.CreateRestaurantRequest;
 import com.sankalp.quickbite.restaurant.dto.RestaurantResponse;
 import com.sankalp.quickbite.restaurant.entity.Restaurant;
-import com.sankalp.quickbite.restaurant.exception.RestaurantNotFoundException;
+import com.sankalp.quickbite.restaurant.entity.RestaurantStatus;
 import com.sankalp.quickbite.restaurant.repository.RestaurantRepository;
+
+import com.sankalp.quickbite.user.entity.User;
+import com.sankalp.quickbite.user.exception.UserNotFoundException;
+import com.sankalp.quickbite.user.repository.UserRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
     private final MenuItemRepository menuItemRepository;
+    private final UserRepository userRepository;
 
-    public RestaurantService(RestaurantRepository restaurantRepository, MenuItemRepository menuItemRepository) {
+    public RestaurantService(RestaurantRepository restaurantRepository, MenuItemRepository menuItemRepository, UserRepository userRepository) {
         this.restaurantRepository = restaurantRepository;
         this.menuItemRepository = menuItemRepository;
+        this.userRepository = userRepository;
     }
 
-    public List<RestaurantResponse> getAllRestaurants() {
-        List<Restaurant> restaurants = restaurantRepository.findAll();
+    @PreAuthorize("hasRole('RESTAURANT_OWNER')")
+    public RestaurantResponse createRestaurant(CreateRestaurantRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
 
-        return restaurants.stream()
-                .map(restaurant -> new RestaurantResponse(
-                        restaurant.getRestaurantId(),
-                        restaurant.getName(),
-                        restaurant.getAddress(),
-                        restaurant.getStatus()
-                )).collect(Collectors.toList());
-    }
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-    public List<MenuItemResponse> getAllMenuItems(Long restaurantId) {
-        boolean isRestaurantPresent = restaurantRepository.existsById(restaurantId);
+        Restaurant restaurant = Restaurant.builder()
+                .owner(user)
+                .name(request.getName())
+                .address(request.getAddress())
+                .status(RestaurantStatus.OPEN)
+                .build();
 
-        if(!isRestaurantPresent) {
-            throw (new RestaurantNotFoundException("Restaurant with ID: " + restaurantId + " not found"));
-        }
+        Restaurant savedRestaurant = restaurantRepository.save(restaurant);
 
-        List<MenuItem> menuItems = menuItemRepository.findByRestaurantIdAndAvailability(restaurantId, MenuItemAvailability.AVAILABLE);
-
-        return menuItems.stream()
-                .map(menuItem -> new MenuItemResponse(
-                        menuItem.getMenuItemId(),
-                        menuItem.getName(),
-                        menuItem.getDescription(),
-                        menuItem.getPrice(),
-                        menuItem.getAvailability()
-                )).collect(Collectors.toList());
+        return new RestaurantResponse(
+                savedRestaurant.getRestaurantId(),
+                savedRestaurant.getName(),
+                savedRestaurant.getAddress() ,
+                savedRestaurant.getStatus()
+        );
     }
 }
