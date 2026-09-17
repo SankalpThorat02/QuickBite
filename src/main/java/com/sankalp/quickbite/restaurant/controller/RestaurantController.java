@@ -67,10 +67,10 @@ public class RestaurantController {
                 .body(menuItem);
     }
 
-//    @PutMapping("/{restaurantId}/menu/{menuItemId}")
-//    public MenuItemResponse updateMenuItem(@PathVariable Long restaurantId, @PathVariable Long menuItemId, @RequestBody @Valid UpdateMenuItemRequest request) {
-//        return menuService.updateMenuItem(restaurantId, menuItemId, request);
-//    }
+    @PutMapping("/{restaurantId}/menu/{menuItemId}")
+    public MenuItemResponse updateMenuItem(@PathVariable Long restaurantId, @PathVariable Long menuItemId, @RequestBody @Valid UpdateMenuItemRequest request) {
+        return menuService.updateMenuItem(restaurantId, menuItemId, request);
+    }
 
     @PutMapping("/{restaurantId}")
     public RestaurantResponse updateRestaurantInfo(@PathVariable Long restaurantId, @RequestBody @Valid RestaurantInfoUpdateRequest request) {

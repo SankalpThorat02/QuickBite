@@ -1,6 +1,8 @@
 package com.sankalp.quickbite.common.exception;
 
 import com.sankalp.quickbite.auth.exception.AdminAccountCreationNotAllowedException;
+import com.sankalp.quickbite.menu.exception.MenuItemNotFoundException;
+import com.sankalp.quickbite.menu.exception.MenuItemRestaurantMismatchException;
 import com.sankalp.quickbite.restaurant.exception.ForbiddenStatusUpdateException;
 import com.sankalp.quickbite.restaurant.exception.RestaurantNotFoundException;
 import com.sankalp.quickbite.restaurant.exception.UnauthorizedRestaurantAccessException;
@@ -46,12 +48,26 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnauthorizedRestaurantAccessException.class)
     public ResponseEntity<String> handleUnauthorizedRestaurantAccessException(UnauthorizedRestaurantAccessException ex) {
         return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
+                .status(HttpStatus.FORBIDDEN)
                 .body(ex.getMessage());
     }
 
     @ExceptionHandler(ForbiddenStatusUpdateException.class)
     public ResponseEntity<String> handleForbiddenStatusUpdateException(ForbiddenStatusUpdateException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(MenuItemNotFoundException.class)
+    public ResponseEntity<String> handleMenuItemNotFoundException(MenuItemNotFoundException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(MenuItemRestaurantMismatchException.class)
+    public ResponseEntity<String> handleMenuItemRestaurantMismatchException(MenuItemRestaurantMismatchException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ex.getMessage());
