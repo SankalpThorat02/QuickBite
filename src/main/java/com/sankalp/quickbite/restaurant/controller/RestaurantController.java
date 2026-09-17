@@ -2,6 +2,7 @@ package com.sankalp.quickbite.restaurant.controller;
 
 import com.sankalp.quickbite.menu.dto.CreateMenuItemRequest;
 import com.sankalp.quickbite.menu.dto.MenuItemResponse;
+import com.sankalp.quickbite.menu.dto.UpdateMenuItemAvailabilityRequest;
 import com.sankalp.quickbite.menu.dto.UpdateMenuItemRequest;
 import com.sankalp.quickbite.menu.service.MenuService;
 import com.sankalp.quickbite.restaurant.dto.CreateRestaurantRequest;
@@ -70,6 +71,11 @@ public class RestaurantController {
     @PutMapping("/{restaurantId}/menu/{menuItemId}")
     public MenuItemResponse updateMenuItem(@PathVariable Long restaurantId, @PathVariable Long menuItemId, @RequestBody @Valid UpdateMenuItemRequest request) {
         return menuService.updateMenuItem(restaurantId, menuItemId, request);
+    }
+
+    @PatchMapping("/{restaurantId}/menu/{menuItemId}/availability")
+    public MenuItemResponse updateMenuItemAvailability(@PathVariable Long restaurantId, @PathVariable Long menuItemId, @RequestBody @Valid UpdateMenuItemAvailabilityRequest request) {
+        return menuService.updateMenuItemAvailability(restaurantId, menuItemId, request);
     }
 
     @PutMapping("/{restaurantId}")

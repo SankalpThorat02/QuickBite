@@ -3,11 +3,11 @@ package com.sankalp.quickbite.menu.service;
 import com.sankalp.quickbite.common.security.CurrentUserService;
 import com.sankalp.quickbite.menu.dto.CreateMenuItemRequest;
 import com.sankalp.quickbite.menu.dto.MenuItemResponse;
+import com.sankalp.quickbite.menu.dto.UpdateMenuItemAvailabilityRequest;
 import com.sankalp.quickbite.menu.dto.UpdateMenuItemRequest;
 import com.sankalp.quickbite.menu.entity.MenuItem;
 import com.sankalp.quickbite.menu.entity.MenuItemAvailability;
 import com.sankalp.quickbite.menu.exception.MenuItemNotFoundException;
-import com.sankalp.quickbite.menu.exception.MenuItemRestaurantMismatchException;
 import com.sankalp.quickbite.menu.mapper.MenuItemMapper;
 import com.sankalp.quickbite.menu.repository.MenuItemRepository;
 import com.sankalp.quickbite.restaurant.entity.Restaurant;
@@ -91,6 +91,26 @@ public class MenuService {
         menuItem.setDescription(request.getDescription());
         menuItem.setPrice(request.getPrice());
 
+        MenuItem savedMenuItem = menuItemRepository.save(menuItem);
+
+        return menuItemMapper.toResponse(savedMenuItem);
+    }
+
+    @PreAuthorize("hasRole('RESTAURANT_OWNER')")
+    public MenuItemResponse updateMenuItemAvailability(Long restaurantId, Long menuItemId, UpdateMenuItemAvailabilityRequest request) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new RestaurantNotFoundException("Restaurant with ID: " + restaurantId + " not found"));
+
+        User user = currentUserService.getCurrentUser();
+
+        if(!restaurant.getOwner().getUserId().equals(user.getUserId())) {
+            throw new UnauthorizedRestaurantAccessException("Cannot access this restaurant");
+        }
+
+        MenuItem menuItem = menuItemRepository.findByMenuItemIdAndRestaurant(menuItemId, restaurant)
+                .orElseThrow(() -> new MenuItemNotFoundException("Menu Item with ID: " + menuItemId + " not found"));
+
+        menuItem.setAvailability(request.getMenuItemAvailability());
         MenuItem savedMenuItem = menuItemRepository.save(menuItem);
 
         return menuItemMapper.toResponse(savedMenuItem);
