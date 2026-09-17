@@ -1,9 +1,6 @@
 package com.sankalp.quickbite.restaurant.service;
 
 import com.sankalp.quickbite.common.security.CurrentUserService;
-import com.sankalp.quickbite.menu.dto.MenuItemResponse;
-import com.sankalp.quickbite.menu.entity.MenuItem;
-import com.sankalp.quickbite.menu.entity.MenuItemAvailability;
 import com.sankalp.quickbite.menu.repository.MenuItemRepository;
 import com.sankalp.quickbite.restaurant.dto.CreateRestaurantRequest;
 import com.sankalp.quickbite.restaurant.dto.RestaurantResponse;
@@ -30,13 +27,11 @@ public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
     private final RestaurantMapper restaurantMapper;
-    private final MenuItemRepository menuItemRepository;
     private final CurrentUserService currentUserService;
 
-    public RestaurantService(RestaurantRepository restaurantRepository, RestaurantMapper restaurantMapper, MenuItemRepository menuItemRepository, CurrentUserService currentUserService) {
+    public RestaurantService(RestaurantRepository restaurantRepository, RestaurantMapper restaurantMapper, CurrentUserService currentUserService) {
         this.restaurantRepository = restaurantRepository;
         this.restaurantMapper = restaurantMapper;
-        this.menuItemRepository = menuItemRepository;
         this.currentUserService = currentUserService;
     }
 
