@@ -59,6 +59,16 @@ public class RestaurantController {
         return menuService.getMenuItems(restaurantId);
     }
 
+    @GetMapping("/{restaurantId}/menu/{menuItemId}")
+    public MenuItemResponse getMenuItem(@PathVariable Long restaurantId, @PathVariable Long menuItemId) {
+        return menuService.getMenuItem(restaurantId, menuItemId);
+    }
+
+    @GetMapping("/{restaurantId}/menu/manage")
+    public List<MenuItemResponse> getAllMenuItems(@PathVariable Long restaurantId) {
+        return menuService.getAllMenuItems(restaurantId);
+    }
+
     @PostMapping("/{restaurantId}/menu")
     public ResponseEntity<MenuItemResponse> addMenuItem(@PathVariable Long restaurantId, @RequestBody @Valid CreateMenuItemRequest request) {
         MenuItemResponse menuItem = menuService.addMenuItem(restaurantId, request);

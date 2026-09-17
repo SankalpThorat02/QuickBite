@@ -10,5 +10,8 @@ import java.util.Optional;
 
 public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
     List<MenuItem> findByRestaurantAndAvailability(Restaurant restaurant, MenuItemAvailability availability);
+    List<MenuItem> findByRestaurant(Restaurant restaurant);
+
     Optional<MenuItem> findByMenuItemIdAndRestaurant(Long menuItemId, Restaurant restaurant);
+    Optional<MenuItem> findByMenuItemIdAndRestaurantAndAvailability(Long menuItemId, Restaurant restaurant, MenuItemAvailability availability);
 }
