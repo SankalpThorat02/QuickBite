@@ -1,6 +1,7 @@
-package com.sankalp.quickbite.common;
+package com.sankalp.quickbite.common.exception;
 
 import com.sankalp.quickbite.auth.exception.AdminAccountCreationNotAllowedException;
+import com.sankalp.quickbite.restaurant.exception.ForbiddenStatusUpdateException;
 import com.sankalp.quickbite.restaurant.exception.RestaurantNotFoundException;
 import com.sankalp.quickbite.restaurant.exception.UnauthorizedRestaurantAccessException;
 import com.sankalp.quickbite.user.exception.IncorrectPasswordProvidedException;
@@ -46,6 +47,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleUnauthorizedRestaurantAccessException(UnauthorizedRestaurantAccessException ex) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(ForbiddenStatusUpdateException.class)
+    public ResponseEntity<String> handleForbiddenStatusUpdateException(ForbiddenStatusUpdateException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
                 .body(ex.getMessage());
     }
 }

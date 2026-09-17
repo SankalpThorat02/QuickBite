@@ -3,13 +3,13 @@ package com.sankalp.quickbite.restaurant.controller;
 import com.sankalp.quickbite.menu.dto.MenuItemResponse;
 import com.sankalp.quickbite.restaurant.dto.CreateRestaurantRequest;
 import com.sankalp.quickbite.restaurant.dto.RestaurantResponse;
-import com.sankalp.quickbite.restaurant.dto.UpdateRestaurantInfoRequest;
+import com.sankalp.quickbite.restaurant.dto.RestaurantInfoUpdateRequest;
+import com.sankalp.quickbite.restaurant.dto.RestaurantStatusUpdateRequest;
+import com.sankalp.quickbite.restaurant.entity.RestaurantStatus;
 import com.sankalp.quickbite.restaurant.service.RestaurantService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -54,7 +54,12 @@ public class RestaurantController {
     }
 
     @PutMapping("/{restaurantId}")
-    public RestaurantResponse updateRestaurantInfo(@PathVariable Long restaurantId, @RequestBody @Valid UpdateRestaurantInfoRequest request) {
+    public RestaurantResponse updateRestaurantInfo(@PathVariable Long restaurantId, @RequestBody @Valid RestaurantInfoUpdateRequest request) {
         return restaurantService.updateRestaurantInfo(restaurantId, request);
+    }
+
+    @PatchMapping("/{restaurantId}/status")
+    public RestaurantResponse updateRestaurantStatus(@PathVariable Long restaurantId, @RequestBody @Valid RestaurantStatusUpdateRequest request) {
+        return restaurantService.updateRestaurantStatus(restaurantId, request);
     }
 }
