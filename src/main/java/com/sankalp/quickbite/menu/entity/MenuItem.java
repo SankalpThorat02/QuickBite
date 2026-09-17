@@ -27,9 +27,6 @@ public class MenuItem {
     @Column(name = "MENU_ITEM_ID", nullable = false)
     private long menuItemId;
 
-//    @Column(name = "RESTAURANT_ID", nullable = false)
-//    private long restaurantId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "RESTAURANT_ID", nullable = false)
     private Restaurant restaurant;

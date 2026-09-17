@@ -18,11 +18,7 @@ import com.sankalp.quickbite.restaurant.mapper.RestaurantMapper;
 import com.sankalp.quickbite.restaurant.repository.RestaurantRepository;
 
 import com.sankalp.quickbite.user.entity.User;
-import com.sankalp.quickbite.user.exception.UserNotFoundException;
-import com.sankalp.quickbite.user.repository.UserRepository;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,14 +29,12 @@ import java.util.stream.Collectors;
 public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
-    private final UserRepository userRepository;
     private final RestaurantMapper restaurantMapper;
     private final MenuItemRepository menuItemRepository;
     private final CurrentUserService currentUserService;
 
-    public RestaurantService(RestaurantRepository restaurantRepository, UserRepository userRepository, RestaurantMapper restaurantMapper, MenuItemRepository menuItemRepository, CurrentUserService currentUserService) {
+    public RestaurantService(RestaurantRepository restaurantRepository, RestaurantMapper restaurantMapper, MenuItemRepository menuItemRepository, CurrentUserService currentUserService) {
         this.restaurantRepository = restaurantRepository;
-        this.userRepository = userRepository;
         this.restaurantMapper = restaurantMapper;
         this.menuItemRepository = menuItemRepository;
         this.currentUserService = currentUserService;
@@ -70,7 +64,7 @@ public class RestaurantService {
 
         return restaurants
                 .stream()
-                .map(restaurant -> restaurantMapper.toResponse(restaurant))
+                .map(restaurantMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -79,7 +73,7 @@ public class RestaurantService {
 
         return restaurants
                 .stream()
-                .map(restaurant -> restaurantMapper.toResponse(restaurant))
+                .map(restaurantMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -88,23 +82,6 @@ public class RestaurantService {
                 .orElseThrow(() -> new RestaurantNotFoundException("Restaurant with ID: " +  restaurantId + " not found"));
 
         return restaurantMapper.toResponse(restaurant);
-    }
-
-    public List<MenuItemResponse> getMenuItems(Long restaurantId) {
-        Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new RestaurantNotFoundException("Restaurant with ID: " + restaurantId + " not found"));
-
-        List<MenuItem> menuItems = menuItemRepository.findByRestaurantAndAvailability(restaurant, MenuItemAvailability.AVAILABLE);
-
-        return menuItems
-                .stream()
-                .map(menuItem -> new MenuItemResponse(
-                    menuItem.getMenuItemId(),
-                    menuItem.getName(),
-                    menuItem.getDescription(),
-                    menuItem.getPrice(),
-                    menuItem.getAvailability()
-                )).collect(Collectors.toList());
     }
 
     @PreAuthorize("hasRole('RESTAURANT_OWNER')")

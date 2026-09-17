@@ -1,6 +1,7 @@
 package com.sankalp.quickbite.restaurant.controller;
 
 import com.sankalp.quickbite.menu.dto.MenuItemResponse;
+import com.sankalp.quickbite.menu.service.MenuService;
 import com.sankalp.quickbite.restaurant.dto.CreateRestaurantRequest;
 import com.sankalp.quickbite.restaurant.dto.RestaurantResponse;
 import com.sankalp.quickbite.restaurant.dto.RestaurantInfoUpdateRequest;
@@ -19,9 +20,11 @@ import java.util.List;
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
+    private final MenuService menuService;
 
-    public RestaurantController(RestaurantService restaurantService) {
+    public RestaurantController(RestaurantService restaurantService, MenuService menuService) {
         this.restaurantService = restaurantService;
+        this.menuService = menuService;
     }
 
     @PostMapping
@@ -50,7 +53,7 @@ public class RestaurantController {
 
     @GetMapping("/{restaurantId}/menu")
     public List<MenuItemResponse> getMenuItems(@PathVariable Long restaurantId) {
-        return restaurantService.getMenuItems(restaurantId);
+        return menuService.getMenuItems(restaurantId);
     }
 
     @PutMapping("/{restaurantId}")
