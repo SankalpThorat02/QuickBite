@@ -1,10 +1,10 @@
 package com.sankalp.quickbite.cart.controller;
 
+import com.sankalp.quickbite.cart.dto.AddCartItemRequest;
 import com.sankalp.quickbite.cart.dto.CartResponse;
 import com.sankalp.quickbite.cart.service.CartService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/cart")
@@ -19,5 +19,10 @@ public class CartController {
     @GetMapping
     public CartResponse getCart() {
         return cartService.getCart();
+    }
+
+    @PostMapping
+    public CartResponse addItem(@RequestBody @Valid AddCartItemRequest request) {
+        return cartService.addItem(request);
     }
 }

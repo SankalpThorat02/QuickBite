@@ -1,10 +1,13 @@
 package com.sankalp.quickbite.common.exception;
 
 import com.sankalp.quickbite.auth.exception.AdminAccountCreationNotAllowedException;
+import com.sankalp.quickbite.cart.exception.CartItemRestaurantMismatchException;
+import com.sankalp.quickbite.menu.exception.MenuItemNotAvailableException;
 import com.sankalp.quickbite.menu.exception.MenuItemNotFoundException;
 import com.sankalp.quickbite.menu.exception.MenuItemRestaurantMismatchException;
 import com.sankalp.quickbite.restaurant.exception.ForbiddenStatusUpdateException;
 import com.sankalp.quickbite.restaurant.exception.RestaurantNotFoundException;
+import com.sankalp.quickbite.restaurant.exception.RestaurantNotOpenException;
 import com.sankalp.quickbite.restaurant.exception.UnauthorizedRestaurantAccessException;
 import com.sankalp.quickbite.user.exception.IncorrectPasswordProvidedException;
 import com.sankalp.quickbite.user.exception.UserNotFoundException;
@@ -70,6 +73,27 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleMenuItemRestaurantMismatchException(MenuItemRestaurantMismatchException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(MenuItemNotAvailableException.class)
+    public ResponseEntity<String> handleMenuItemNotAvailableException(MenuItemNotAvailableException ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(RestaurantNotOpenException.class)
+    public ResponseEntity<String> handleRestaurantNotOpenException(RestaurantNotOpenException ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(CartItemRestaurantMismatchException.class)
+    public ResponseEntity<String> handleCartItemRestaurantMismatchException(CartItemRestaurantMismatchException ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
                 .body(ex.getMessage());
     }
 }

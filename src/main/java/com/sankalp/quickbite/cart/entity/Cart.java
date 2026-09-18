@@ -2,14 +2,12 @@ package com.sankalp.quickbite.cart.entity;
 
 import com.sankalp.quickbite.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,6 +16,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Cart {
 
     @Id
@@ -33,7 +32,7 @@ public class Cart {
     @OneToMany(mappedBy = "cart",
                 cascade = CascadeType.ALL,
                 orphanRemoval = true)
-    private List<CartItem> items;
+    private List<CartItem> items = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "USER_ID", nullable = false)
