@@ -1,7 +1,6 @@
 package com.sankalp.quickbite.restaurant.service;
 
 import com.sankalp.quickbite.common.security.CurrentUserService;
-import com.sankalp.quickbite.menu.repository.MenuItemRepository;
 import com.sankalp.quickbite.restaurant.dto.CreateRestaurantRequest;
 import com.sankalp.quickbite.restaurant.dto.RestaurantResponse;
 import com.sankalp.quickbite.restaurant.dto.RestaurantInfoUpdateRequest;

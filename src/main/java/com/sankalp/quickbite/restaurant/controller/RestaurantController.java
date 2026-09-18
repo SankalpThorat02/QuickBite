@@ -9,7 +9,6 @@ import com.sankalp.quickbite.restaurant.dto.CreateRestaurantRequest;
 import com.sankalp.quickbite.restaurant.dto.RestaurantResponse;
 import com.sankalp.quickbite.restaurant.dto.RestaurantInfoUpdateRequest;
 import com.sankalp.quickbite.restaurant.dto.RestaurantStatusUpdateRequest;
-import com.sankalp.quickbite.restaurant.entity.RestaurantStatus;
 import com.sankalp.quickbite.restaurant.service.RestaurantService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
