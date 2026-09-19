@@ -284,4 +284,20 @@ public class CartService {
                 total
         );
     }
+
+    @Transactional
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public CartResponse deleteCart() {
+        User user = currentUserService.getCurrentUser();
+
+        Cart cart = cartRepository.findByUser(user)
+                .orElseThrow(() -> new CartEmptyException("Cart is empty"));
+
+        cart.clearItems();
+
+        return new CartResponse(
+                new ArrayList<>(),
+                BigDecimal.ZERO
+        );
+    }
 }

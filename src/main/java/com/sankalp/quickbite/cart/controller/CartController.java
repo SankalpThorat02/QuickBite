@@ -37,4 +37,9 @@ public class CartController {
     public CartResponse setItemQuantity(@PathVariable Long menuItemId, @RequestBody @Valid SetCartItemQuantityRequest request) {
         return cartService.setItemQuantity(menuItemId, request);
     }
+
+    @DeleteMapping
+    public CartResponse deleteCart() {
+        return cartService.deleteCart();
+    }
 }

@@ -29,6 +29,7 @@ public class Cart {
     @Column(name = "CART_ID", nullable = false)
     private Long cartId;
 
+    @Builder.Default
     @OneToMany(mappedBy = "cart",
                 cascade = CascadeType.ALL,
                 orphanRemoval = true)
@@ -54,5 +55,13 @@ public class Cart {
     public void removeItem(CartItem cartItem) {
         items.remove(cartItem);
         cartItem.setCart(null);
+    }
+
+    public void clearItems() {
+        for(CartItem cartItem : items) {
+            cartItem.setCart(null);
+        }
+
+        items.clear();
     }
 }
