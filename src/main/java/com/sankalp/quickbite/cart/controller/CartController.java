@@ -2,6 +2,7 @@ package com.sankalp.quickbite.cart.controller;
 
 import com.sankalp.quickbite.cart.dto.AddCartItemRequest;
 import com.sankalp.quickbite.cart.dto.CartResponse;
+import com.sankalp.quickbite.cart.dto.SetCartItemQuantityRequest;
 import com.sankalp.quickbite.cart.service.CartService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -28,10 +29,12 @@ public class CartController {
     }
 
     @DeleteMapping("/items/{menuItemId}")
-    public ResponseEntity<Void> removeItem(@PathVariable Long menuItemId) {
-        cartService.removeItem(menuItemId);
-        return ResponseEntity
-                .noContent()
-                .build();
+    public CartResponse removeItem(@PathVariable Long menuItemId) {
+        return cartService.removeItem(menuItemId);
+    }
+
+    @PatchMapping("/items/{menuItemId}")
+    public CartResponse setItemQuantity(@PathVariable Long menuItemId, @RequestBody @Valid SetCartItemQuantityRequest request) {
+        return cartService.setItemQuantity(menuItemId, request);
     }
 }

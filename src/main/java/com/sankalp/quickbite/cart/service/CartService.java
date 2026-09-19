@@ -3,6 +3,7 @@ package com.sankalp.quickbite.cart.service;
 import com.sankalp.quickbite.cart.dto.AddCartItemRequest;
 import com.sankalp.quickbite.cart.dto.CartItemResponse;
 import com.sankalp.quickbite.cart.dto.CartResponse;
+import com.sankalp.quickbite.cart.dto.SetCartItemQuantityRequest;
 import com.sankalp.quickbite.cart.entity.Cart;
 import com.sankalp.quickbite.cart.entity.CartItem;
 import com.sankalp.quickbite.cart.exception.CartEmptyException;
@@ -186,7 +187,7 @@ public class CartService {
 
     @Transactional
     @PreAuthorize("hasRole('CUSTOMER')")
-    public void removeItem(Long menuItemId) {
+    public CartResponse removeItem(Long menuItemId) {
         User user = currentUserService.getCurrentUser();
 
         Optional<Cart> optionalCart = cartRepository.findByUser(user);
@@ -199,5 +200,88 @@ public class CartService {
                 .orElseThrow(() -> new CartItemNotFoundException("Cart item not found"));
 
         cart.removeItem(item);
+
+        List<CartItem> items = cart.getItems();
+
+        List<CartItemResponse> cartItemResponses = items
+                .stream()
+                .map(cartItem -> {
+                    MenuItem currentMenuItem = cartItem.getMenuItem();
+
+                    Long currentMenuItemId = currentMenuItem.getMenuItemId();
+                    String name = currentMenuItem.getName();
+                    BigDecimal unitPrice = currentMenuItem.getPrice();
+
+                    BigDecimal lineTotal = unitPrice.multiply(BigDecimal.valueOf(cartItem.getQuantity()));
+
+                    return new CartItemResponse(
+                            currentMenuItemId,
+                            name,
+                            cartItem.getQuantity(),
+                            unitPrice,
+                            lineTotal
+                    );
+                })
+                .collect(Collectors.toList());
+
+        BigDecimal total = cartItemResponses
+                .stream()
+                .map(CartItemResponse::getLineTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return new CartResponse(
+                cartItemResponses,
+                total
+        );
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public CartResponse setItemQuantity(Long menuItemId, SetCartItemQuantityRequest request) {
+        User user = currentUserService.getCurrentUser();
+
+        Optional<Cart> optionalCart = cartRepository.findByUser(user);
+        if(optionalCart.isEmpty()){
+            throw new CartEmptyException("Cart is empty");
+        }
+
+        Cart cart = optionalCart.get();
+        CartItem item = cartItemRepository.findByCartAndMenuItem_MenuItemId(cart, menuItemId)
+                .orElseThrow(() -> new CartItemNotFoundException("Cart item not found"));
+
+        item.setQuantity(request.getQuantity());
+
+        List<CartItem> items = cart.getItems();
+
+        List<CartItemResponse> cartItemResponses = items
+                .stream()
+                .map(cartItem -> {
+                    MenuItem currentMenuItem = cartItem.getMenuItem();
+
+                    Long currentMenuItemId = currentMenuItem.getMenuItemId();
+                    String name = currentMenuItem.getName();
+                    BigDecimal unitPrice = currentMenuItem.getPrice();
+
+                    BigDecimal lineTotal = unitPrice.multiply(BigDecimal.valueOf(cartItem.getQuantity()));
+
+                    return new CartItemResponse(
+                            currentMenuItemId,
+                            name,
+                            cartItem.getQuantity(),
+                            unitPrice,
+                            lineTotal
+                    );
+                })
+                .collect(Collectors.toList());
+
+        BigDecimal total = cartItemResponses
+                .stream()
+                .map(CartItemResponse::getLineTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return new CartResponse(
+                cartItemResponses,
+                total
+        );
     }
 }
