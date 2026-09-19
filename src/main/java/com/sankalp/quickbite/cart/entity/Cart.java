@@ -45,4 +45,14 @@ public class Cart {
     @UpdateTimestamp
     @Column(name = "UPDATED_AT", nullable = false)
     private LocalDateTime updatedAt;
+
+    public void addItem(CartItem cartItem) {
+        items.add(cartItem);
+        cartItem.setCart(this);
+    }
+
+    public void removeItem(CartItem cartItem) {
+        items.remove(cartItem);
+        cartItem.setCart(null);
+    }
 }

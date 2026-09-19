@@ -5,6 +5,8 @@ import com.sankalp.quickbite.cart.dto.CartItemResponse;
 import com.sankalp.quickbite.cart.dto.CartResponse;
 import com.sankalp.quickbite.cart.entity.Cart;
 import com.sankalp.quickbite.cart.entity.CartItem;
+import com.sankalp.quickbite.cart.exception.CartEmptyException;
+import com.sankalp.quickbite.cart.exception.CartItemNotFoundException;
 import com.sankalp.quickbite.cart.exception.CartItemRestaurantMismatchException;
 import com.sankalp.quickbite.cart.repository.CartItemRepository;
 import com.sankalp.quickbite.cart.repository.CartRepository;
@@ -140,7 +142,7 @@ public class CartService {
                     .quantity(request.getQuantity())
                     .build();
 
-            cart.getItems().add(cartItem);
+            cart.addItem(cartItem);
             cartRepository.save(cart);
         }
         else {
@@ -180,5 +182,22 @@ public class CartService {
                 cartItemResponses,
                 total
         );
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public void removeItem(Long menuItemId) {
+        User user = currentUserService.getCurrentUser();
+
+        Optional<Cart> optionalCart = cartRepository.findByUser(user);
+        if(optionalCart.isEmpty()){
+            throw new CartEmptyException("Cart is empty");
+        }
+
+        Cart cart = optionalCart.get();
+        CartItem item = cartItemRepository.findByCartAndMenuItem_MenuItemId(cart, menuItemId)
+                .orElseThrow(() -> new CartItemNotFoundException("Cart item not found"));
+
+        cart.removeItem(item);
     }
 }

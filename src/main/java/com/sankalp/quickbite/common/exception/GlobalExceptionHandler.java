@@ -1,6 +1,8 @@
 package com.sankalp.quickbite.common.exception;
 
 import com.sankalp.quickbite.auth.exception.AdminAccountCreationNotAllowedException;
+import com.sankalp.quickbite.cart.exception.CartEmptyException;
+import com.sankalp.quickbite.cart.exception.CartItemNotFoundException;
 import com.sankalp.quickbite.cart.exception.CartItemRestaurantMismatchException;
 import com.sankalp.quickbite.menu.exception.MenuItemNotAvailableException;
 import com.sankalp.quickbite.menu.exception.MenuItemNotFoundException;
@@ -94,6 +96,20 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleCartItemRestaurantMismatchException(CartItemRestaurantMismatchException ex) {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(CartEmptyException.class)
+    public ResponseEntity<String> handleCartEmptyException(CartEmptyException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(CartItemNotFoundException.class)
+    public ResponseEntity<String> handleCartItemNotFoundException(CartItemNotFoundException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
                 .body(ex.getMessage());
     }
 }

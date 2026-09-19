@@ -4,13 +4,14 @@ import com.sankalp.quickbite.cart.dto.AddCartItemRequest;
 import com.sankalp.quickbite.cart.dto.CartResponse;
 import com.sankalp.quickbite.cart.service.CartService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/cart")
 public class CartController {
 
-    private CartService cartService;
+    private final CartService cartService;
 
     public CartController(CartService cartService) {
         this.cartService = cartService;
@@ -24,5 +25,13 @@ public class CartController {
     @PostMapping
     public CartResponse addItem(@RequestBody @Valid AddCartItemRequest request) {
         return cartService.addItem(request);
+    }
+
+    @DeleteMapping("/items/{menuItemId}")
+    public ResponseEntity<Void> removeItem(@PathVariable Long menuItemId) {
+        cartService.removeItem(menuItemId);
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }
