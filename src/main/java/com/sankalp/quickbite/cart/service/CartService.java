@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -114,6 +115,7 @@ public class CartService {
         if(optionalCart.isEmpty()){
             cart = Cart.builder()
                     .user(user)
+                    .items(new ArrayList<>())
                     .build();
 
             cart = cartRepository.save(cart);
