@@ -152,37 +152,39 @@ public class CartService {
 
             cartItemRepository.save(cartItem);
         }
+//
+//        List<CartItemResponse> cartItemResponses = items
+//                .stream()
+//                .map(item -> {
+//                    MenuItem currentMenuItem = item.getMenuItem();
+//
+//                    Long menuItemId = currentMenuItem.getMenuItemId();
+//                    String name = currentMenuItem.getName();
+//                    BigDecimal unitPrice = currentMenuItem.getPrice();
+//
+//                    BigDecimal lineTotal = unitPrice.multiply(BigDecimal.valueOf(item.getQuantity()));
+//
+//                    return new CartItemResponse(
+//                            menuItemId,
+//                            name,
+//                            item.getQuantity(),
+//                            unitPrice,
+//                            lineTotal
+//                    );
+//                })
+//                .collect(Collectors.toList());
+//
+//        BigDecimal total = cartItemResponses
+//                .stream()
+//                .map(CartItemResponse::getLineTotal)
+//                .reduce(BigDecimal.ZERO, BigDecimal::add);
+//
+//        return new CartResponse(
+//                cartItemResponses,
+//                total
+//        );
 
-        List<CartItemResponse> cartItemResponses = items
-                .stream()
-                .map(item -> {
-                    MenuItem currentMenuItem = item.getMenuItem();
-
-                    Long menuItemId = currentMenuItem.getMenuItemId();
-                    String name = currentMenuItem.getName();
-                    BigDecimal unitPrice = currentMenuItem.getPrice();
-
-                    BigDecimal lineTotal = unitPrice.multiply(BigDecimal.valueOf(item.getQuantity()));
-
-                    return new CartItemResponse(
-                            menuItemId,
-                            name,
-                            item.getQuantity(),
-                            unitPrice,
-                            lineTotal
-                    );
-                })
-                .collect(Collectors.toList());
-
-        BigDecimal total = cartItemResponses
-                .stream()
-                .map(CartItemResponse::getLineTotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        return new CartResponse(
-                cartItemResponses,
-                total
-        );
+        return getCartResponse(cart);
     }
 
     @Transactional
@@ -201,38 +203,40 @@ public class CartService {
 
         cart.removeItem(item);
 
-        List<CartItem> items = cart.getItems();
+//        List<CartItem> items = cart.getItems();
+//
+//        List<CartItemResponse> cartItemResponses = items
+//                .stream()
+//                .map(cartItem -> {
+//                    MenuItem currentMenuItem = cartItem.getMenuItem();
+//
+//                    Long currentMenuItemId = currentMenuItem.getMenuItemId();
+//                    String name = currentMenuItem.getName();
+//                    BigDecimal unitPrice = currentMenuItem.getPrice();
+//
+//                    BigDecimal lineTotal = unitPrice.multiply(BigDecimal.valueOf(cartItem.getQuantity()));
+//
+//                    return new CartItemResponse(
+//                            currentMenuItemId,
+//                            name,
+//                            cartItem.getQuantity(),
+//                            unitPrice,
+//                            lineTotal
+//                    );
+//                })
+//                .collect(Collectors.toList());
+//
+//        BigDecimal total = cartItemResponses
+//                .stream()
+//                .map(CartItemResponse::getLineTotal)
+//                .reduce(BigDecimal.ZERO, BigDecimal::add);
+//
+//        return new CartResponse(
+//                cartItemResponses,
+//                total
+//        );
 
-        List<CartItemResponse> cartItemResponses = items
-                .stream()
-                .map(cartItem -> {
-                    MenuItem currentMenuItem = cartItem.getMenuItem();
-
-                    Long currentMenuItemId = currentMenuItem.getMenuItemId();
-                    String name = currentMenuItem.getName();
-                    BigDecimal unitPrice = currentMenuItem.getPrice();
-
-                    BigDecimal lineTotal = unitPrice.multiply(BigDecimal.valueOf(cartItem.getQuantity()));
-
-                    return new CartItemResponse(
-                            currentMenuItemId,
-                            name,
-                            cartItem.getQuantity(),
-                            unitPrice,
-                            lineTotal
-                    );
-                })
-                .collect(Collectors.toList());
-
-        BigDecimal total = cartItemResponses
-                .stream()
-                .map(CartItemResponse::getLineTotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        return new CartResponse(
-                cartItemResponses,
-                total
-        );
+        return getCartResponse(cart);
     }
 
     @Transactional
@@ -251,6 +255,60 @@ public class CartService {
 
         item.setQuantity(request.getQuantity());
 
+//        List<CartItem> items = cart.getItems();
+//
+//        List<CartItemResponse> cartItemResponses = items
+//                .stream()
+//                .map(cartItem -> {
+//                    MenuItem currentMenuItem = cartItem.getMenuItem();
+//
+//                    Long currentMenuItemId = currentMenuItem.getMenuItemId();
+//                    String name = currentMenuItem.getName();
+//                    BigDecimal unitPrice = currentMenuItem.getPrice();
+//
+//                    BigDecimal lineTotal = unitPrice.multiply(BigDecimal.valueOf(cartItem.getQuantity()));
+//
+//                    return new CartItemResponse(
+//                            currentMenuItemId,
+//                            name,
+//                            cartItem.getQuantity(),
+//                            unitPrice,
+//                            lineTotal
+//                    );
+//                })
+//                .collect(Collectors.toList());
+//
+//        BigDecimal total = cartItemResponses
+//                .stream()
+//                .map(CartItemResponse::getLineTotal)
+//                .reduce(BigDecimal.ZERO, BigDecimal::add);
+//
+//        return new CartResponse(
+//                cartItemResponses,
+//                total
+//        );
+
+        return getCartResponse(cart);
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public CartResponse deleteCart() {
+        User user = currentUserService.getCurrentUser();
+
+        Cart cart = cartRepository.findByUser(user)
+                .orElseThrow(() -> new CartEmptyException("Cart is empty"));
+
+        cart.clearItems();
+
+        return new CartResponse(
+                new ArrayList<>(),
+                BigDecimal.ZERO
+        );
+    }
+
+    private CartResponse getCartResponse(Cart cart) {
+
         List<CartItem> items = cart.getItems();
 
         List<CartItemResponse> cartItemResponses = items
@@ -282,22 +340,6 @@ public class CartService {
         return new CartResponse(
                 cartItemResponses,
                 total
-        );
-    }
-
-    @Transactional
-    @PreAuthorize("hasRole('CUSTOMER')")
-    public CartResponse deleteCart() {
-        User user = currentUserService.getCurrentUser();
-
-        Cart cart = cartRepository.findByUser(user)
-                .orElseThrow(() -> new CartEmptyException("Cart is empty"));
-
-        cart.clearItems();
-
-        return new CartResponse(
-                new ArrayList<>(),
-                BigDecimal.ZERO
         );
     }
 }
