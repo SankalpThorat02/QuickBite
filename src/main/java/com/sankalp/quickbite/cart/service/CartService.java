@@ -255,38 +255,38 @@ public class CartService {
 
         item.setQuantity(request.getQuantity());
 
-        List<CartItem> items = cart.getItems();
-
-        List<CartItemResponse> cartItemResponses = items
-                .stream()
-                .map(cartItem -> {
-                    MenuItem currentMenuItem = cartItem.getMenuItem();
-
-                    Long currentMenuItemId = currentMenuItem.getMenuItemId();
-                    String name = currentMenuItem.getName();
-                    BigDecimal unitPrice = currentMenuItem.getPrice();
-
-                    BigDecimal lineTotal = unitPrice.multiply(BigDecimal.valueOf(cartItem.getQuantity()));
-
-                    return new CartItemResponse(
-                            currentMenuItemId,
-                            name,
-                            cartItem.getQuantity(),
-                            unitPrice,
-                            lineTotal
-                    );
-                })
-                .collect(Collectors.toList());
-
-        BigDecimal total = cartItemResponses
-                .stream()
-                .map(CartItemResponse::getLineTotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        return new CartResponse(
-                cartItemResponses,
-                total
-        );
+//        List<CartItem> items = cart.getItems();
+//
+//        List<CartItemResponse> cartItemResponses = items
+//                .stream()
+//                .map(cartItem -> {
+//                    MenuItem currentMenuItem = cartItem.getMenuItem();
+//
+//                    Long currentMenuItemId = currentMenuItem.getMenuItemId();
+//                    String name = currentMenuItem.getName();
+//                    BigDecimal unitPrice = currentMenuItem.getPrice();
+//
+//                    BigDecimal lineTotal = unitPrice.multiply(BigDecimal.valueOf(cartItem.getQuantity()));
+//
+//                    return new CartItemResponse(
+//                            currentMenuItemId,
+//                            name,
+//                            cartItem.getQuantity(),
+//                            unitPrice,
+//                            lineTotal
+//                    );
+//                })
+//                .collect(Collectors.toList());
+//
+//        BigDecimal total = cartItemResponses
+//                .stream()
+//                .map(CartItemResponse::getLineTotal)
+//                .reduce(BigDecimal.ZERO, BigDecimal::add);
+//
+//        return new CartResponse(
+//                cartItemResponses,
+//                total
+//        );
 
         return getCartResponse(cart);
     }
