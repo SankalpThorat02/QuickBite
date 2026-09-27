@@ -37,7 +37,7 @@ public class Order {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<OrderItem> orderItems = new ArrayList<>();
+    private List<OrderItem> items = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "USER_ID", nullable = false)
@@ -67,4 +67,9 @@ public class Order {
     @UpdateTimestamp
     @Column(name = "UPDATED_AT", nullable = false)
     private LocalDateTime updatedAt;
+
+    public void addItem(OrderItem orderItem) {
+        items.add(orderItem);
+        orderItem.setOrder(this);
+    }
 }
